@@ -14,11 +14,20 @@ export const register = async (req, res, next) => {
     });
 
     await newUser.save();
-    res.status(200).send("User has been created.");
+    res.status(201).json({ success: true, message: 'User registered successfully' });
   } catch (err) {
+    if (err.code === 11000 && err.keyPattern && err.keyPattern.username) {
+      // Duplicate key error for the 'username' field
+      res.status(400).json({ success: false, message: 'Username is already taken' });
+    } else {
+      // Handle other errors
+      console.error(err);
+      res.status(500).json({ success: false, message: 'Internal Server Error' });
     next(err);
   }
+}
 };
+
 export const login = async (req, res, next) => {
   try {
     const user = await User.findOne({ username: req.body.username });

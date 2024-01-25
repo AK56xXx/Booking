@@ -5,9 +5,12 @@ import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUpload
 import { useState } from "react";
 import { hotelInputs } from "../../formSource";
 import useFetch from "../../hooks/useFetch";
+import { useNavigate} from "react-router-dom";
+import Swal from 'sweetalert2';
 import axios from "axios";
 
 const NewHotel = () => {
+  const navigate = useNavigate();
   const [files, setFiles] = useState("");
   const [info, setInfo] = useState({});
   const [rooms, setRooms] = useState([]);
@@ -35,9 +38,9 @@ const NewHotel = () => {
         Object.values(files).map(async (file) => {
           const data = new FormData();
           data.append("file", file);
-          data.append("upload_preset", "upload");
+          data.append("upload_preset", "app_upload");
           const uploadRes = await axios.post(
-            "https://api.cloudinary.com/v1_1/lamadev/image/upload",
+            "https://api.cloudinary.com/v1_1/dj4zfm8og/image/upload",
             data
           );
 
@@ -53,8 +56,26 @@ const NewHotel = () => {
       };
 
       await axios.post("/hotels", newhotel);
-    } catch (err) {console.log(err)}
+
+      //redirect
+      navigate("/hotels");
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: 'Hotel added successfully',
+      });
+
+    } catch (err) {
+      console.log(err)
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Something went wrong!',
+      });
+    }
   };
+  
   return (
     <div className="new">
       <Sidebar />

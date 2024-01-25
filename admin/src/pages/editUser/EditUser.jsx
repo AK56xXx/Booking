@@ -1,20 +1,42 @@
-import "./new.scss";
+import "./edit.scss";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUploadOutlined";
-import { useState } from "react";
-import { useNavigate} from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Swal from 'sweetalert2';
 import axios from "axios";
 
 
-const New = ({ inputs, title }) => {
+
+const EditUser = ({ inputs, title }) => {
   const navigate = useNavigate();
-  const [file, setFile] = useState("");
+  const { userId } = useParams();
+  const [file, setFile] = useState(null);
   const [info, setInfo] = useState({});
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(`/users/${userId}`);
+        setInfo(response.data);
+      } catch (error) {
+        console.error(error);
+        // Handle error, maybe show an error notification
+      }
+    };
+
+    if (userId) {
+      fetchUserData();
+    }
+  }, [userId]);
 
   const handleChange = (e) => {
     setInfo((prev) => ({ ...prev, [e.target.id]: e.target.value }));
+  };
+
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
   };
 
   const handleClick = async (e) => {
@@ -22,46 +44,41 @@ const New = ({ inputs, title }) => {
     const data = new FormData();
     data.append("file", file);
     data.append("upload_preset", "app_upload");
+
     try {
-
       let url = "";
-      if(file){
-      const uploadRes = await axios.post(
-        "https://api.cloudinary.com/v1_1/dj4zfm8og/image/upload",
-        data
-      );
-
-       url  = uploadRes.data.url;
+      if (file) {
+        const uploadRes = await axios.post(
+          "https://api.cloudinary.com/v1_1/dj4zfm8og/image/upload",
+          data
+        );
+        url = uploadRes.data.url;
       }
 
-      const newUser = {
+      const updatedUser = {
         ...info,
         img: url || undefined,
       };
 
-      await axios.post("/auth/register", newUser);
-      //redirect
-      navigate("/users");
-
+      await axios.put(`/users/${userId}`, updatedUser);
+      navigate("/users"); // Redirect to users list
       Swal.fire({
-        icon: 'success',
-        title: 'Success!',
-        text: 'User registered successfully',
+        icon: "success",
+        title: "Success!",
+        text: "User updated successfully",
       });
-
     } catch (err) {
       console.log(err);
       Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Something went wrong!',
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong!",
       });
     }
   };
 
-  console.log(info);
   return (
-    <div className="new">
+    <div className="edit">
       <Sidebar />
       <div className="newContainer">
         <Navbar />
@@ -74,7 +91,7 @@ const New = ({ inputs, title }) => {
               src={
                 file
                   ? URL.createObjectURL(file)
-                  : "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"
+                  : info.img || "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"
               }
               alt=""
             />
@@ -88,7 +105,7 @@ const New = ({ inputs, title }) => {
                 <input
                   type="file"
                   id="file"
-                  onChange={(e) => setFile(e.target.files[0])}
+                  onChange={handleFileChange}
                   style={{ display: "none" }}
                 />
               </div>
@@ -101,11 +118,11 @@ const New = ({ inputs, title }) => {
                     type={input.type}
                     placeholder={input.placeholder}
                     id={input.id}
+                    value={info[input.id] || ""} // Pre-fill with fetched data
                   />
                 </div>
               ))}
-              <button onClick={handleClick}>Send</button>
-              
+              <button onClick={handleClick}>Update</button>
             </form>
           </div>
         </div>
@@ -114,4 +131,4 @@ const New = ({ inputs, title }) => {
   );
 };
 
-export default New;
+export default EditUser;

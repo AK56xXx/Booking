@@ -5,17 +5,23 @@ import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUpload
 import { useState } from "react";
 import { roomInputs } from "../../formSource";
 import useFetch from "../../hooks/useFetch";
+import { useNavigate} from "react-router-dom";
+import Swal from 'sweetalert2';
 import axios from "axios";
 
 const NewRoom = () => {
+  const navigate = useNavigate();
   const [info, setInfo] = useState({});
   const [hotelId, setHotelId] = useState(undefined);
-  const [rooms, setRooms] = useState([]);
+  const [rooms, setRooms] = useState(['']);
 
   const { data, loading, error } = useFetch("/hotels");
 
   const handleChange = (e) => {
     setInfo((prev) => ({ ...prev, [e.target.id]: e.target.value }));
+    if (e.target.id === 'rooms') {
+      setRooms(e.target.value);
+    }
   };
 
   const handleClick = async (e) => {
@@ -23,8 +29,23 @@ const NewRoom = () => {
     const roomNumbers = rooms.split(",").map((room) => ({ number: room }));
     try {
       await axios.post(`/rooms/${hotelId}`, { ...info, roomNumbers });
+      
+       //redirect
+       navigate("/rooms");
+
+       Swal.fire({
+         icon: 'success',
+         title: 'Success!',
+         text: 'Room added successfully',
+       });
+
     } catch (err) {
       console.log(err);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Something went wrong!',
+      });
     }
   };
 
