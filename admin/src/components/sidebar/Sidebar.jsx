@@ -1,7 +1,7 @@
 import "./sidebar.scss";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
-import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import Mail from "@mui/icons-material/Mail";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
 import StoreIcon from "@mui/icons-material/Store";
 import InsertChartIcon from "@mui/icons-material/InsertChart";
@@ -52,7 +52,7 @@ const Sidebar = () => {
             </li>
           </Link>
           <li>
-            <LocalShippingIcon className="icon" />
+            <Mail className="icon" />
             <span>Contact</span>
           </li>
         

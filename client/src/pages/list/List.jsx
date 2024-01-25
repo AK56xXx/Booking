@@ -106,17 +106,15 @@ const List = () => {
             <button onClick={handleClick}>Search</button>
           </div>
           <div className="listResult">
-          {loading ? (
-          "Loading..."
-        ) : error ? (
-          "Error loading data. Please try again."
-        ) : data && data.length > 0 ? (
-          data.map((item) => (
-            <SearchItem item={item} key={item._id} />
-          ))
-        ) : (
-          "No results found."
-        )}
+            {loading ? (
+              "Loading..."
+            ) : error ? (
+              "Error loading data. Please try again."
+            ) : Array.isArray(data) && data.length > 0 ? (
+              data.map((item) => <SearchItem item={item} key={item._id} />)
+            ) : (
+              "No results found."
+            )}
           </div>
         </div>
       </div>

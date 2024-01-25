@@ -61,6 +61,10 @@ const Reserve = ({ setOpen, hotelId }) => {
           return res.data;
         })
       );
+      
+      // const updatedData = await axios.get(`/hotels/room/${hotelId}`);
+      //setData(updatedData.data); // Assuming there is a setData function in your component
+
       setOpen(false);
       navigate("/");
     } catch (err) {}
@@ -86,7 +90,7 @@ const Reserve = ({ setOpen, hotelId }) => {
             </div>
             <div className="rSelectRooms">
               {item.roomNumbers.map((roomNumber) => (
-                <div className="room">
+                <div className="room" key={roomNumber._id}>
                   <label>{roomNumber.number}</label>
                   <input
                     type="checkbox"
