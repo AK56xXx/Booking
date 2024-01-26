@@ -33,7 +33,7 @@ const Datatable = ({columns}) => {
       renderCell: (params) => {
         return (
           <div className="cellAction">
-            <Link to={`/users/edit/${params.row._id}`} style={{ textDecoration: "none" }}>
+            <Link to={`/${path}/edit/${params.row._id}`} style={{ textDecoration: "none" }}>
               <div className="viewButton">View</div>
             </Link>
             <div

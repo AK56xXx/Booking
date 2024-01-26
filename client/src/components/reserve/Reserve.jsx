@@ -62,11 +62,7 @@ const Reserve = ({ setOpen, hotelId }) => {
         })
       );
 
-      // update the reserved list
-       const updatedData = await axios.get(`/hotels/room/${hotelId}`);
-       setData(updatedData.data);
-
-     // Display SweetAlert2 modal here
+    // Display SweetAlert2 modal here
      Swal.fire({
       title: "Reservation Confirmed!",
       text: "Your rooms have been reserved successfully. Enjoy your stay!",
@@ -78,6 +74,12 @@ const Reserve = ({ setOpen, hotelId }) => {
       setOpen(false);
       navigate("/");
     });
+
+      // update the reserved list
+       const updatedData = await axios.get(`/hotels/room/${hotelId}`);
+       setData(updatedData.data);
+
+     
 
       setOpen(false);
       navigate("/");

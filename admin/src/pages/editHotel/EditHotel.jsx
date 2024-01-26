@@ -1,0 +1,162 @@
+import "./editHotel.scss";
+import Sidebar from "../../components/sidebar/Sidebar";
+import Navbar from "../../components/navbar/Navbar";
+import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUploadOutlined";
+import { useState, useEffect } from "react";
+import { hotelInputs } from "../../formSource";
+import useFetch from "../../hooks/useFetch";
+import { useNavigate, useParams } from "react-router-dom";
+import Swal from 'sweetalert2';
+import axios from "axios";
+
+const EditHotel = () => {
+  const navigate = useNavigate();
+  const { id } = useParams(); // Get the hotel ID from the route parameters
+  const [files, setFiles] = useState("");
+  const [info, setInfo] = useState({});
+  const [rooms, setRooms] = useState([]);
+
+  const { data: hotelData, loading: hotelLoading, error: hotelError } = useFetch(`/hotels/${id}`);
+  const { data: roomsData, loading: roomsLoading, error: roomsError } = useFetch("/rooms");
+
+  useEffect(() => {
+    if (hotelData) {
+      // Populate form fields with the fetched hotel data
+      setInfo(hotelData);
+      setRooms(hotelData.rooms || []); // Assuming the rooms property exists in the hotel data
+    }
+  }, [hotelData]);
+
+  const handleChange = (e) => {
+    setInfo((prev) => ({ ...prev, [e.target.id]: e.target.value }));
+  };
+
+  const handleSelect = (e) => {
+    const value = Array.from(
+      e.target.selectedOptions,
+      (option) => option.value
+    );
+    setRooms(value);
+  };
+
+  const handleClick = async (e) => {
+    e.preventDefault();
+    try {
+      const list = await Promise.all(
+        Object.values(files).map(async (file) => {
+          const data = new FormData();
+          data.append("file", file);
+          data.append("upload_preset", "app_upload");
+          const uploadRes = await axios.post(
+            "https://api.cloudinary.com/v1_1/dj4zfm8og/image/upload",
+            data
+          );
+
+          const { url } = uploadRes.data;
+          return url;
+        })
+      );
+
+      const editedHotel = {
+        ...info,
+        rooms,
+        photos: list,
+      };
+
+      await axios.put(`/hotels/edit/${id}`, editedHotel);
+
+      // Redirect after successful update
+      navigate("/hotels");
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: 'Hotel updated successfully',
+      });
+
+    } catch (err) {
+      console.log(err)
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Something went wrong!',
+      });
+    }
+  };
+
+  return (
+    <div className="new">
+      <Sidebar />
+      <div className="newContainer">
+        <Navbar />
+        <div className="top">
+          <h1>Edit Hotel</h1>
+        </div>
+        <div className="bottom">
+          <div className="left">
+            <img
+              src={
+                files
+                  ? URL.createObjectURL(files[0])
+                  : "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"
+              }
+              alt=""
+            />
+          </div>
+          <div className="right">
+            <form>
+              <div className="formInput">
+                <label htmlFor="file">
+                  Image: <DriveFolderUploadOutlinedIcon className="icon" />
+                </label>
+                <input
+                  type="file"
+                  id="file"
+                  multiple
+                  onChange={(e) => setFiles(e.target.files)}
+                  style={{ display: "none" }}
+                />
+              </div>
+
+              {hotelInputs.map((input) => (
+                <div className="formInput" key={input.id}>
+                  <label>{input.label}</label>
+                  <input
+                    id={input.id}
+                    onChange={handleChange}
+                    type={input.type}
+                    placeholder={input.placeholder}
+                    value={info[input.id] || ""}
+                  />
+                </div>
+              ))}
+              <div className="formInput">
+                <label>Featured</label>
+                <select id="featured" onChange={handleChange} value={info.featured || false}>
+                  <option value={false}>No</option>
+                  <option value={true}>Yes</option>
+                </select>
+              </div>
+              <div className="selectRooms">
+                <label>Rooms</label>
+                <select id="rooms" multiple onChange={handleSelect} value={rooms}>
+                  {roomsLoading
+                    ? "loading"
+                    : roomsData &&
+                      roomsData.map((room) => (
+                        <option key={room._id} value={room._id}>
+                          {room.title}
+                        </option>
+                      ))}
+                </select>
+              </div>
+              <button onClick={handleClick}>Update</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default EditHotel;
