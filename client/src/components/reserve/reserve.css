@@ -12,7 +12,7 @@
 
 .rContainer {
   background-color: white;
-  padding: 20px;
+  padding: 100px;
   position: relative;
 }
 
@@ -56,7 +56,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
-  font-size: 8px;
+  font-size: 15px;
   color: gray;
 }
 
@@ -68,7 +68,7 @@
 .rButton {
   border: none;
   padding: 10px 20px;
-  background-color: #0071c2;
+  background-color: #00c220;
   color: white;
   font-weight: bold;
   cursor: pointer;

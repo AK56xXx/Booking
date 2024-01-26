@@ -7,10 +7,10 @@ import { useContext, useState } from "react";
 import { SearchContext } from "../../context/SearchContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
+import Swal from "sweetalert2"
 const Reserve = ({ setOpen, hotelId }) => {
   const [selectedRooms, setSelectedRooms] = useState([]);
-  const { data, loading, error } = useFetch(`/hotels/room/${hotelId}`);
+  const {data,loading, error, setData } = useFetch(`/hotels/room/${hotelId}`);
   const { dates } = useContext(SearchContext);
 
   const getDatesInRange = (startDate, endDate) => {
@@ -61,12 +61,27 @@ const Reserve = ({ setOpen, hotelId }) => {
           return res.data;
         })
       );
-      
-      // const updatedData = await axios.get(`/hotels/room/${hotelId}`);
-      //setData(updatedData.data); // Assuming there is a setData function in your component
+
+      // update the reserved list
+       const updatedData = await axios.get(`/hotels/room/${hotelId}`);
+       setData(updatedData.data);
+
+     // Display SweetAlert2 modal here
+     Swal.fire({
+      title: "Reservation Confirmed!",
+      text: "Your rooms have been reserved successfully. Enjoy your stay!",
+      icon: "success",
+      confirmButtonColor: "#3085C7",
+      confirmButtonText: "Go to Hotels",
+    }).then(() => {
+      // Navigate to /hotels after modal confirmation
+      setOpen(false);
+      navigate("/");
+    });
 
       setOpen(false);
       navigate("/");
+
     } catch (err) {}
   };
   return (

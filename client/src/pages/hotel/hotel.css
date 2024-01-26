@@ -20,7 +20,7 @@
   right: 0;
   border: none;
   padding: 10px 20px;
-  background-color: #0071c2;
+  background-color: #00c21a;
   color: white;
   font-weight: bold;
   border-radius: 5px;
@@ -102,7 +102,7 @@
 .hotelDetailsPrice > button {
   border: none;
   padding: 10px 20px;
-  background-color: #0071c2;
+  background-color: #00c210;
   color: white;
   font-weight: bold;
   cursor: pointer;

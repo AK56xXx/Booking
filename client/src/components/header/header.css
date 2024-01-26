@@ -1,5 +1,5 @@
 .header {
-  background-color: #050500;
+  background-color: #1a1a1a;
   color: white;
   display: flex;
   justify-content: center;
@@ -9,7 +9,7 @@
 .headerContainer {
   width: 100%;
   max-width: 1024px;
-  margin: 20px 0px 100px 0px;
+  margin: 500px 0px 100px 0px;
 }
 
 .headerContainer.listMode {
@@ -29,9 +29,10 @@
 }
 
 .headerListItem.active {
-  border: 1px solid white;
+  border: 1px solid #f84903;
   padding: 10px;
   border-radius: 20px;
+  
 }
 
 .headerDesc {
@@ -39,23 +40,29 @@
 }
 
 .headerBtn {
-  background-color: #0071c2;
+  background-color: #f84903;
   color: white;
   font-weight: 500;
   border: none;
   padding: 10px;
   cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.headerBtn:hover {
+  background-color: #d43d03;
 }
 
 .headerSearch {
-  height: 30px;
+  height: 70px;
   background-color: white;
-  border: 3px solid #febb02;
+  border: 3px solid #f84903;
   display: flex;
   align-items: center;
   justify-content: space-around;
   padding: 10px 0px;
-  border-radius: 5px;
+  border-radius: 15px; /* Increase the border-radius for a rounded look */
   position: absolute;
   bottom: -25px;
   width: 100%;
@@ -75,6 +82,8 @@
 .headerSearchInput {
   border: none;
   outline: none;
+  padding: 5px;
+  border-radius: 5px; /* Increase the border-radius for a rounded look */
 }
 
 .headerSearchText {
@@ -95,7 +104,6 @@
   background-color: white;
   color: gray;
   border-radius: 5px;
-  -webkit-box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.4);
   box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.4);
 }
 

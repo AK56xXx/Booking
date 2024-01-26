@@ -20,6 +20,9 @@ import { useNavigate } from "react-router-dom";
 import { SearchContext } from "../../context/SearchContext";
 import { AuthContext } from "../../context/AuthContext";
 
+import heroImage from "../header/hero_4.jpg";
+
+
 const Header = ({ type }) => {
   const [destination, setDestination] = useState("");
   const [openDate, setOpenDate] = useState(false);
@@ -58,7 +61,7 @@ const Header = ({ type }) => {
   };
 
   return (
-    <div className="header">
+    <div className="header" style={{ backgroundImage: `url(${heroImage})` }}>
       <div
         className={
           type === "list" ? "headerContainer listMode" : "headerContainer"
@@ -79,10 +82,11 @@ const Header = ({ type }) => {
             <span>About</span>
           </div>
         </div>
+        
         {type !== "list" && (
           <>
             <h1 className="headerTitle">
-            Welcome to Your Ultimate Stay !
+            The Best Place To Reserve
             </h1>
             <p className="headerDesc">
               Get rewarded for your travels – unlock instant savings of 10% or
